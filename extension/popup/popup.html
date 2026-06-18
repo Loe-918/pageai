@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PageAI</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="logo">🧠 PageAI</h1>
+      <span class="badge" id="planBadge">Free</span>
+    </header>
+
+    <!-- Quick Actions -->
+    <div class="actions">
+      <button class="action-btn primary" id="btnSummarize">
+        <span class="icon">📝</span>
+        <span class="label">Summarize Page</span>
+        <span class="shortcut">Ctrl+Shift+S</span>
+      </button>
+      <button class="action-btn" id="btnTranslate">
+        <span class="icon">🌐</span>
+        <span class="label">Translate Selection</span>
+      </button>
+      <button class="action-btn" id="btnExtract">
+        <span class="icon">📊</span>
+        <span class="label">Extract Data</span>
+      </button>
+    </div>
+
+    <!-- Custom Question -->
+    <div class="custom-section">
+      <textarea id="customPrompt" placeholder="Ask anything about this page..." rows="2"></textarea>
+      <button class="action-btn secondary" id="btnAsk">
+        <span class="icon">💬</span>
+        <span class="label">Ask</span>
+      </button>
+    </div>
+
+    <!-- Result Area -->
+    <div class="result-section" id="resultSection" style="display:none;">
+      <div class="result-header">
+        <span class="result-title" id="resultTitle">Result</span>
+        <button class="copy-btn" id="btnCopy" title="Copy to clipboard">📋</button>
+      </div>
+      <div class="result-content" id="resultContent">
+        <div class="loading">
+          <div class="spinner"></div>
+          <span>AI is thinking...</span>
+        </div>
+      </div>
+      <div class="result-footer">
+        <span class="usage-info" id="usageInfo">10/10 uses remaining today</span>
+      </div>
+    </div>
+
+    <!-- Upgrade Banner -->
+    <div class="upgrade-banner" id="upgradeBanner" style="display:none;">
+      <p>🚀 Daily limit reached</p>
+      <a href="https://pageai.dev/upgrade" target="_blank" class="upgrade-btn">Upgrade to Pro — $10/mo</a>
+    </div>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <span class="status-text" id="statusText">Ready</span>
+      <span class="version">v1.0.0</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
