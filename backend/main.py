@@ -22,8 +22,9 @@ load_dotenv()
 
 # ============== Config ==============
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL", "")  # For DeepSeek/other providers
 FREE_DAILY_LIMIT = int(os.getenv("FREE_DAILY_LIMIT", "10"))
-CLAUDE_MODEL = "claude-haiku-4-5-20251001"  # Fast & cheap for summarization
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "deepseek-v4-flash")  # Fast & cheap
 
 # ============== App Setup ==============
 app = FastAPI(
@@ -41,7 +42,13 @@ app.add_middleware(
 )
 
 # ============== Clients ==============
-claude = Anthropic(api_key=ANTHROPIC_API_KEY) if ANTHROPIC_API_KEY else None
+if ANTHROPIC_API_KEY:
+    kwargs = {"api_key": ANTHROPIC_API_KEY}
+    if ANTHROPIC_BASE_URL:
+        kwargs["base_url"] = ANTHROPIC_BASE_URL
+    claude = Anthropic(**kwargs)
+else:
+    claude = None
 
 
 # ============== Models ==============
@@ -86,8 +93,17 @@ def call_claude(system_prompt: str, user_message: str, max_tokens: int = 1000) -
             messages=[{"role": "user", "content": user_message}],
         )
 
+        # Extract text from response — skip thinking blocks
+        result_text = ""
+        for block in response.content:
+            if hasattr(block, "text") and block.text:
+                result_text += block.text
+
+        if not result_text:
+            raise HTTPException(status_code=500, detail="AI returned empty response")
+
         return AIResponse(
-            result=response.content[0].text,
+            result=result_text,
             model=CLAUDE_MODEL,
             tokens_used=response.usage.output_tokens,
         )
